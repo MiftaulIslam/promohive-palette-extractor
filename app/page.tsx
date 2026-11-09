@@ -2,7 +2,7 @@ import './page.css';
 import type { Viewport } from 'next';
 import { Press } from '@/components/Press';
 import { PressController } from '@/components/PressController';
-import { Plate, Rack, Say, Separations } from '@/components/Sections';
+import { Plate, Rack, Say, Separations, SwatchWall } from '@/components/Sections';
 import { ToolFoot } from '@/components/Shell';
 import sample from '@/assets/palette.webp';
 import { inkOverAll, rgbOf, themeVars, toHex } from '@/lib/logic';
@@ -28,6 +28,7 @@ export default function Page() {
       <Press />
       <main>
         <Rack />
+        <SwatchWall />
         <Plate />
         <Say />
         <Separations />

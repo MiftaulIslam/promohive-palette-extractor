@@ -1,7 +1,7 @@
 import { calm, resetCopy } from './client';
 import { updateSeparations, type Read } from './separations';
 import { chipHtml, cssHtml } from '@/lib/markup';
-import { BLANK, INK, WHITE, inkOverAll, paletteCss, rgbOf, swatch, themeVars, toHex, type Cluster, type RGB } from '@/lib/logic';
+import { paletteCss, swatch, themeVars, toHex, type Cluster } from '@/lib/logic';
 import { SAMPLE_COLORS } from '@/lib/sample';
 
 const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector(s) as T;
@@ -14,39 +14,9 @@ const loadingEl = $('#pal-loading'), errorEl = $('#pal-error'), emptyEl = $('#pa
 const resetBtn = $('[data-pal-reset]');
 const cssBtn = $<HTMLButtonElement>('[data-pal-css]'), cssBlock = $('#pal-css-block'), cssEmpty = $('#pal-css-empty');
 const chipsEl = $('#pal-chips'), chipsEmpty = $('#pal-chips-empty');
-const brand = $('.press .ph-brand'), nav = $('.press .ph-nav');
 const bands = matchMedia('(width <= 1000px)');
 
 let colors: readonly Cluster[] = SAMPLE_COLORS;
-let tracking = false;
-
-// The header sits over whichever fields are under it at this width, so measure them.
-function inkHeader() {
-  const under = (el: HTMLElement) => {
-    const a = el.getBoundingClientRect();
-    return fields.flatMap((li, i): RGB[] => {
-      const b = li.getBoundingClientRect();
-      if (!(b.left < a.right && b.right > a.left && b.top < a.bottom && b.bottom > a.top)) return [];
-      return [colors[i] ? rgbOf(colors[i]) : BLANK];
-    });
-  };
-  const st = document.documentElement.style;
-  const apply = (el: HTMLElement, prop: string, partnerProp?: string) => {
-    const ink = el === nav ? null : inkOverAll(under(el)); // the nav spans a seam between fields, so it always sits on the plate
-    el.classList.toggle('has-plate', !ink);
-    if (ink) {
-      st.setProperty(prop, toHex(ink));
-      if (partnerProp) st.setProperty(partnerProp, toHex(ink === WHITE ? INK : WHITE));
-      el.style.setProperty('--focus', toHex(ink));
-    } else {
-      st.setProperty(prop, 'var(--panel-ink)');
-      if (partnerProp) st.setProperty(partnerProp, 'var(--panel)');
-      el.style.setProperty('--focus', 'var(--panel-ink)');
-    }
-  };
-  apply(brand, '--bar-brand');
-  apply(nav, '--bar-nav', '--bar-nav-on');
-}
 
 function setRoot(list: readonly Cluster[]) {
   const st = document.documentElement.style;
@@ -143,14 +113,6 @@ function showImage(src: string | null) {
   resetBtn.hidden = !src;
 }
 
-function startTracking() {
-  if (tracking) return;
-  tracking = true;
-  let raf = 0;
-  addEventListener('resize', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(inkHeader); });
-  document.fonts.ready.then(inkHeader);
-}
-
 export function land(list: readonly Cluster[], src: string | null, read: Read | null) {
   colors = list;
   press.classList.remove('press--sample');
@@ -160,8 +122,6 @@ export function land(list: readonly Cluster[], src: string | null, read: Read | 
     setRoot(list);
     sheets.forEach((s, i) => fillSheet(s, list[i], !!src));
   });
-  inkHeader();
-  startTracking();
   renderChips(list);
   renderCss(list);
   updateSeparations(read, list);

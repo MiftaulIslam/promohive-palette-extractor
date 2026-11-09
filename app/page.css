@@ -4,7 +4,7 @@
 .hex, .share__n, .aa dd, .copy__hex, .chip__share, .chip__hex, .chip__aa dd, .film__hex, .plate__pre { font-variant-numeric: tabular-nums; }
 
 /* ---------- The press: six fields, one panel ---------- */
-.press { position: relative; isolation: isolate; display: grid; grid-template-rows: auto auto minmax(272px, 1fr); min-height: clamp(720px, 100svh, 1120px); overflow: hidden; background: var(--blank); }
+.press { position: relative; z-index: 50; isolation: isolate; display: grid; grid-template-rows: auto auto minmax(272px, 1fr); min-height: clamp(720px, 100svh, 1120px); overflow: hidden; background: var(--blank); }
 .fields { position: absolute; inset: 0; z-index: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .field { position: relative; min-width: 0; }
 .sheet { position: absolute; inset: 0; z-index: 1; display: flex; align-items: flex-end; background: var(--c); color: var(--ci); --focus: var(--ci); }
@@ -36,16 +36,9 @@
 .press.is-over .panel { outline: 3px dashed var(--panel-ink); outline-offset: -12px; }
 
 /* Header over the fields: an upload's inks are measured per element in press-view.ts */
-.press .ph-bar { z-index: 20; grid-row: 1; }
-.press .ph-brand { color: var(--bar-brand); border-radius: 6px; transition: color .2s var(--ease) .12s; }
-.press .ph-nav { color: var(--bar-nav); border-radius: 8px; transition: color .2s var(--ease) .3s; }
+.press .ph-bar { z-index: 100; grid-row: 1; }
 /* 44px targets for the shared header links; the plate only appears when no single ink can pass on the fields underneath */
-.press .ph-brand { display: inline-flex; align-items: center; min-height: 44px; }
 /* From 560px only: below that the kit hides this link and a display rule here would bring it back */
-@media (width >= 560px) { .press .ph-nav a:not(.ph-btn) { display: inline-flex; align-items: center; min-height: 44px; } }
-.press .ph-brand.has-plate, .press .ph-nav.has-plate, .press--sample .ph-brand, .press--sample .ph-nav { margin: -4px -12px; padding: 4px 12px; background: var(--panel); }
-.press--sample .ph-brand, .press--sample .ph-nav { --focus: var(--panel-ink); }
-.press .ph-nav .ph-btn:hover { background: var(--bar-nav); border-color: var(--bar-nav); color: var(--bar-nav-on); }
 
 /* The one calm panel: flush to the sheet edge, cut to the field grid */
 .panel { position: relative; z-index: 10; grid-row: 2; width: calc(100% * 4 / 6); padding: 32px 40px 28px max(var(--gutter), calc((100vw - var(--wrap)) / 2)); background: var(--panel); color: var(--panel-ink); --focus: var(--panel-ink); transition: background-color .3s var(--ease), color .3s var(--ease); }
@@ -113,6 +106,7 @@
 .plate h2 { font-size: clamp(40px, 4.4vw, 64px); }
 .plate__words p { margin-top: 20px; color: var(--on-night-2); max-width: 40ch; }
 .plate__who strong { color: var(--on-night); font-weight: 600; }
+.plate__photo { position: relative; aspect-ratio: 16 / 10; margin-top: 32px; overflow: hidden; border-radius: 12px; }
 .plate__pre { margin: 0; padding: 0; overflow-x: auto; font: 400 clamp(17px, 2.4vw, 34px)/1.62 var(--mono); color: var(--on-night); white-space: pre; }
 .plate__pre .ln { display: block; }
 .plate__pre .swt { display: inline-block; width: .72em; height: .72em; margin-right: .5em; border-radius: 2px; vertical-align: -.02em; }
@@ -166,11 +160,9 @@
 /* Space held for the sections while they are skipped off screen: their measured height on this layout */
 
 /* The sample's header at the widths where the brand clears the seam between fields: over the first field when stacked, over the second on very wide screens */
-@media (width >= 2040px) { .press--sample .ph-brand { margin: 0; padding: 0; background: none; color: var(--sample-brand-second); --focus: var(--sample-brand-second); } }
 
 /* ---------- Bands: the press turns on its side ---------- */
 @media (width <= 1000px) {
-  .press--sample .ph-brand { margin: 0; padding: 0; background: none; color: var(--sample-brand-first); --focus: var(--sample-brand-first); }
 
   .chip:nth-child(2) { --dy: 9px; }
   .chip:nth-child(3) { --dy: 3px; }
