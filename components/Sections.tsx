@@ -1,11 +1,18 @@
 import Image from 'next/image';
 import sample from '@/assets/palette.webp';
+import swatches from '@/assets/photos/swatches.jpg';
+import watercolor from '@/assets/photos/watercolor.jpg';
+import paintpots from '@/assets/photos/paintpots.jpg';
 import { paletteCss } from '@/lib/logic';
 import { chipHtml, cssHtml, filmHtml } from '@/lib/markup';
 import { SAMPLE_COLORS, SAMPLE_READ } from '@/lib/sample';
 
 const chips = SAMPLE_COLORS.map((c, i) => chipHtml(c, i, SAMPLE_COLORS.length)).join('');
 const films = SAMPLE_COLORS.map((c) => filmHtml(c, SAMPLE_READ.w, SAMPLE_READ.h)).join('');
+
+export function SwatchWall() {
+  return <figure className="ph-strip" aria-hidden="true"><Image className="ph-bg" src={swatches} alt="" fill sizes="100vw" placeholder="blur" /></figure>;
+}
 
 export function Rack() {
   return (
@@ -37,6 +44,7 @@ export function Plate() {
           <h2 id="plate-h">Six lines for your stylesheet</h2>
           <p>Each swatch has its own copy button, and one more button copies all six as CSS variables.</p>
           <p className="plate__who"><strong>Developers setting up a theme</strong> turn a logo into CSS variables for a first theme, with the contrast already checked.</p>
+          <figure className="plate__photo" aria-hidden="true"><Image className="ph-bg" src={watercolor} alt="" fill sizes="360px" placeholder="blur" /></figure>
         </div>
         <div className="plate__code" data-in style={{ '--i': 1 }}>
           <pre className="plate__pre" id="pal-css-block" tabIndex={0} aria-label="CSS variables for the current palette" dangerouslySetInnerHTML={{ __html: cssHtml(SAMPLE_COLORS) }} />
@@ -50,7 +58,8 @@ export function Plate() {
 
 export function Say() {
   return (
-    <section className="say below" aria-labelledby="say-h">
+    <section className="say below has-photo" aria-labelledby="say-h">
+      <Image className="ph-bg" src={paintpots} alt="" fill sizes="100vw" placeholder="blur" />
       <div className="wrap">
         <h2 id="say-h" data-in>Many products start with a logo file and a few photos, and no written color codes</h2>
         <p className="say__after" data-in style={{ '--i': 1 }}>Picking colors by eye with an eyedropper gives a slightly different shade each time. Then someone sets white text on a pale yellow button, and nobody can read it.</p>
