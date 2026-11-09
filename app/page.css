@@ -1,0 +1,247 @@
+/* Brand Palette Extractor: the page takes its inks from the image. The sample's values are rendered on the server, an upload replaces them on the root. */
+:root { --blank: #ebe8e1; }
+
+.hex, .share__n, .aa dd, .copy__hex, .chip__share, .chip__hex, .chip__aa dd, .film__hex, .plate__pre { font-variant-numeric: tabular-nums; }
+
+/* ---------- The press: six fields, one panel ---------- */
+.press { position: relative; isolation: isolate; display: grid; grid-template-rows: auto auto minmax(272px, 1fr); min-height: clamp(720px, 100svh, 1120px); overflow: hidden; background: var(--blank); }
+.fields { position: absolute; inset: 0; z-index: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.field { position: relative; min-width: 0; }
+.sheet { position: absolute; inset: 0; z-index: 1; display: flex; align-items: flex-end; background: var(--c); color: var(--ci); --focus: var(--ci); }
+.sheet--ghost { z-index: 0; }
+.sheet__label { display: grid; gap: 12px; width: 100%; padding: 20px clamp(12px, 1.4vw, 24px) 24px; }
+.hex { font: 750 clamp(26px, 3vw, 46px)/1 var(--display); letter-spacing: -.01em; }
+.share { font-size: 15px; line-height: 1.3; }
+.share__n { font: 700 20px/1 var(--display); }
+.bar { display: block; height: 8px; border: 1px solid currentColor; border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: currentColor; transform-origin: left center; }
+.aa { display: grid; gap: 4px; font-size: 15px; line-height: 1.3; }
+.aa > div { display: flex; justify-content: space-between; gap: 8px; }
+.aa b { font-family: var(--body); font-weight: 700; }
+.aa dd { font-family: var(--mono); font-size: 14px; white-space: nowrap; }
+.copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; width: 100%; padding: 0 8px; border: 1px solid currentColor; border-radius: 8px; background: transparent; color: inherit; font: 600 15px/1.2 var(--body); cursor: pointer; transition: background-color .16s var(--ease), color .16s var(--ease), transform .12s var(--ease); }
+.copy:hover { background: var(--ci); color: var(--c); }
+.copy:active { transform: scale(.98); }
+.copy__hex { font-family: var(--mono); font-size: 14px; }
+.copy__hex[hidden] { display: none; }
+
+/* A field with no color: the sheet stays, unprinted */
+.sheet.is-blank .share, .sheet.is-blank .bar, .sheet.is-blank .aa, .sheet.is-blank .copy { display: none; }
+.sheet.is-blank .hex { font: 500 17px/1.3 var(--body); letter-spacing: 0; }
+.sheet.is-blank { border-right: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.field:last-child .sheet.is-blank { border-right: 0; }
+
+/* Dropping anywhere on the press: every sheet marks itself in its own ink */
+.press.is-over .sheet::after { content: ''; position: absolute; inset: 12px; border: 3px dashed var(--ci); border-radius: 8px; pointer-events: none; }
+.press.is-over .panel { outline: 3px dashed var(--panel-ink); outline-offset: -12px; }
+
+/* Header over the fields: an upload's inks are measured per element in press-view.ts */
+.press .ph-bar { z-index: 20; grid-row: 1; }
+.press .ph-brand { color: var(--bar-brand); border-radius: 6px; transition: color .2s var(--ease) .12s; }
+.press .ph-nav { color: var(--bar-nav); border-radius: 8px; transition: color .2s var(--ease) .3s; }
+/* 44px targets for the shared header links; the plate only appears when no single ink can pass on the fields underneath */
+.press .ph-brand { display: inline-flex; align-items: center; min-height: 44px; }
+/* From 560px only: below that the kit hides this link and a display rule here would bring it back */
+@media (width >= 560px) { .press .ph-nav a:not(.ph-btn) { display: inline-flex; align-items: center; min-height: 44px; } }
+.press .ph-brand.has-plate, .press .ph-nav.has-plate, .press--sample .ph-brand, .press--sample .ph-nav { margin: -4px -12px; padding: 4px 12px; background: var(--panel); }
+.press--sample .ph-brand, .press--sample .ph-nav { --focus: var(--panel-ink); }
+.press .ph-nav .ph-btn:hover { background: var(--bar-nav); border-color: var(--bar-nav); color: var(--bar-nav-on); }
+
+/* The one calm panel: flush to the sheet edge, cut to the field grid */
+.panel { position: relative; z-index: 10; grid-row: 2; width: calc(100% * 4 / 6); padding: 32px 40px 28px max(var(--gutter), calc((100vw - var(--wrap)) / 2)); background: var(--panel); color: var(--panel-ink); --focus: var(--panel-ink); transition: background-color .3s var(--ease), color .3s var(--ease); }
+.panel__head { position: relative; }
+.panel h1 { font-size: clamp(52px, 6.7vw, 104px); line-height: 1; letter-spacing: -.02em; max-width: 9.2em; }
+.print { position: absolute; top: -8px; right: -104px; width: clamp(128px, 12vw, 176px); padding: 8px 8px 8px; background: #fff; color: #141311; box-shadow: 0 1px 2px rgba(20, 19, 17, .24), 0 8px 24px rgba(20, 19, 17, .16); transform: rotate(2.5deg); }
+.print[hidden] { display: none; }
+.print img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; background: var(--paper-3); }
+.print figcaption { padding-top: 8px; font-size: 14px; line-height: 1.2; }
+
+.panel__do { display: flex; align-items: center; gap: 24px; margin-top: 28px; }
+.choose { display: inline-flex; align-items: center; justify-content: center; min-height: 60px; padding: 0 32px; border: 1.5px solid var(--panel-ink); border-radius: 10px; background: var(--accent-from-image); color: var(--accent-ink); font: 700 20px/1 var(--display); white-space: nowrap; cursor: pointer; transition: background-color .18s var(--ease), color .18s var(--ease), transform .12s var(--ease); }
+.choose:hover { background: var(--panel-ink); color: var(--panel); }
+.choose:active { transform: scale(.98); }
+#pal-file:focus-visible + .choose { outline: 2px solid var(--panel-ink); outline-offset: 3px; }
+.panel__cue { font-weight: 600; font-size: 17px; line-height: 1.35; }
+.panel__fine { font-size: 16px; line-height: 1.4; }
+
+.panel__foot { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; min-height: 44px; }
+.panel__alt { display: flex; flex-wrap: wrap; gap: 0 20px; }
+.alt { min-height: 44px; padding: 0; border: 0; background: none; color: inherit; font: 500 16px/1 var(--body); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; cursor: pointer; }
+.alt[hidden] { display: none; }
+.alt:hover { text-decoration-thickness: 2px; }
+.status { flex: 1 1 240px; font-size: 16px; line-height: 1.35; }
+.status__err { color: var(--panel-err); font-weight: 600; }
+
+/* ---------- Chip sheet: a proof sheet with paint chips on it ---------- */
+.rack { padding-block: 104px 88px; background: var(--paper); }
+.rack__head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 32px 64px; align-items: end; }
+.rack h2 { font-size: clamp(44px, 5.8vw, 88px); }
+.rack__side { display: grid; gap: 12px; font-size: 17px; color: var(--ink-2); max-width: 46ch; }
+.rack__side strong { color: var(--ink); font-weight: 600; }
+.rack__sheet { position: relative; margin-top: 56px; padding: 40px 32px 72px; background: var(--paper-2); }
+.crop { position: absolute; width: 20px; height: 20px; pointer-events: none; }
+.crop::before, .crop::after { content: ''; position: absolute; background: var(--ink); }
+.crop::before { width: 20px; height: 1px; top: 50%; }
+.crop::after { width: 1px; height: 20px; left: 50%; }
+.crop--tl { top: 8px; left: 8px; } .crop--tr { top: 8px; right: 8px; } .crop--bl { bottom: 8px; left: 8px; } .crop--br { bottom: 8px; right: 8px; }
+.chips { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.chip { display: flex; flex-direction: column; transform: translateY(var(--dy)) rotate(var(--r)); background: #fff; box-shadow: 0 1px 2px rgba(20, 19, 17, .2), 0 6px 16px rgba(20, 19, 17, .1); }
+.chip:nth-child(1) { --r: -1.4deg; --dy: 0px; }
+.chip:nth-child(2) { --r: .8deg; --dy: 28px; }
+.chip:nth-child(3) { --r: -.6deg; --dy: 8px; }
+.chip:nth-child(4) { --r: 1.2deg; --dy: 40px; }
+.chip:nth-child(5) { --r: -.9deg; --dy: 16px; }
+.chip:nth-child(6) { --r: .5deg; --dy: 32px; }
+.chip__face { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; min-height: 248px; padding: 16px 12px; background: var(--c); color: var(--ci); }
+.chip__hole { position: absolute; top: 12px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--paper-2); }
+.chip__share { font: 750 clamp(32px, 3.2vw, 44px)/1 var(--display); letter-spacing: -.02em; }
+.chip__of { font-size: 14px; line-height: 1.2; }
+.chip__tag { display: grid; gap: 8px; padding: 12px; color: var(--ink); }
+.chip__hex { font: 700 19px/1 var(--mono); }
+.chip__lbl { font-size: 14px; line-height: 1.2; color: var(--ink-2); }
+.chip__aa { display: grid; gap: 4px; font-size: 14px; line-height: 1.25; }
+.chip__aa div { display: flex; justify-content: space-between; gap: 8px; }
+.chip__aa dd { font-family: var(--mono); font-size: 14px; white-space: nowrap; }
+.chip__aa b { font-weight: 700; }
+.chip__aa .is-ok { color: var(--ok); }
+.chip__aa .is-no { color: var(--bad); }
+.rack__empty, .plate__empty { font-size: 17px; }
+
+/* ---------- The CSS plate ---------- */
+.plate { background: var(--night); color: var(--on-night); padding-block: 96px; --focus: var(--honey); }
+.plate__grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px 64px; align-items: start; }
+.plate h2 { font-size: clamp(40px, 4.4vw, 64px); }
+.plate__words p { margin-top: 20px; color: var(--on-night-2); max-width: 40ch; }
+.plate__who strong { color: var(--on-night); font-weight: 600; }
+.plate__pre { margin: 0; padding: 0; overflow-x: auto; font: 400 clamp(17px, 2.4vw, 34px)/1.62 var(--mono); color: var(--on-night); white-space: pre; }
+.plate__pre .ln { display: block; }
+.plate__pre .swt { display: inline-block; width: .72em; height: .72em; margin-right: .5em; border-radius: 2px; vertical-align: -.02em; }
+.plate__pre .val { color: var(--on-night); font-weight: 700; }
+.plate__copy { display: inline-flex; align-items: center; justify-content: center; min-height: 56px; margin-top: 32px; padding: 0 28px; border: 1.5px solid var(--on-night); border-radius: 10px; background: var(--accent-from-image); color: var(--accent-ink); font: 700 18px/1.1 var(--display); cursor: pointer; transition: background-color .18s var(--ease), color .18s var(--ease), transform .12s var(--ease); }
+.plate__copy:hover:not(:disabled) { background: var(--on-night); color: var(--night); }
+.plate__copy:active:not(:disabled) { transform: scale(.98); }
+.plate__copy:disabled { background: transparent; color: var(--on-night-2); border-color: var(--on-night-2); cursor: not-allowed; }
+
+/* ---------- The problem, set as one sheet of its color ---------- */
+.say { background: var(--accent-from-image); color: var(--accent-ink); padding-block: 136px 104px; transition: background-color .3s var(--ease), color .3s var(--ease); }
+.say h2 { font-size: clamp(44px, 7.6vw, 120px); line-height: 1; max-width: 15em; }
+.say__after { max-width: 34ch; margin: 56px 0 0 auto; font: 500 clamp(20px, 2vw, 28px)/1.3 var(--body); }
+
+/* ---------- How it works: separations from your own image ---------- */
+.sep { background: var(--paper); padding-block: 104px 96px; }
+.sep__head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 24px 64px; align-items: end; }
+.sep h2 { font-size: clamp(40px, 5vw, 76px); }
+.sep__head p { max-width: 52ch; color: var(--ink-2); }
+.sep__press { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr); gap: 32px; align-items: end; margin-top: 56px; }
+.sep__stage { display: grid; gap: 12px; }
+.sep__frame { background: var(--paper-3); }
+.sep__frame img, .sep__frame canvas { display: block; width: 100%; height: auto; }
+.sep__frame canvas { image-rendering: pixelated; }
+.sep__stage--a .sep__frame img { aspect-ratio: 4 / 5; object-fit: cover; }
+.sep__stage figcaption { font-size: 16px; line-height: 1.4; color: var(--ink-2); }
+.sep__stage figcaption b { color: var(--ink); font-weight: 700; display: block; }
+.sep__n { display: inline-block; font: 750 20px/1 var(--display); color: var(--ink); margin-right: 8px; }
+.sep__n--big { flex: none; width: 1ch; font-size: clamp(56px, 6vw, 88px); margin: 0; line-height: .9; }
+
+.sep__films { margin-top: 48px; }
+.films { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.film { display: grid; gap: 8px; }
+.film__plate { background: var(--plate); }
+.film__plate canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.film__hex { font: 700 16px/1 var(--mono); color: var(--ink); }
+.sep__filmnote { margin-top: 16px; color: var(--ink-2); font-size: 16px; }
+.sep.is-empty .sep__frame, .sep.is-empty .sep__films { display: none; }
+
+.sep__end { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 32px 64px; align-items: start; margin-top: 64px; padding-top: 32px; border-top: 2px solid var(--ink); }
+.sep__moves { display: grid; gap: 32px; }
+.sep__copy { display: flex; gap: 20px; align-items: flex-start; }
+.sep__copy h3 { font-size: clamp(28px, 2.8vw, 40px); }
+.sep__copy p { margin-top: 8px; color: var(--ink-2); max-width: 32ch; }
+.ticket div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding-block: 12px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); }
+.ticket div:first-child { padding-top: 0; }
+.ticket div:last-child { border-bottom: 0; }
+.ticket dt { font-weight: 700; }
+.ticket dd { color: var(--ink-2); }
+
+/* Space held for the sections while they are skipped off screen: their measured height on this layout */
+
+/* The sample's header at the widths where the brand clears the seam between fields: over the first field when stacked, over the second on very wide screens */
+@media (width >= 2040px) { .press--sample .ph-brand { margin: 0; padding: 0; background: none; color: var(--sample-brand-second); --focus: var(--sample-brand-second); } }
+
+/* ---------- Bands: the press turns on its side ---------- */
+@media (width <= 1000px) {
+  .press--sample .ph-brand { margin: 0; padding: 0; background: none; color: var(--sample-brand-first); --focus: var(--sample-brand-first); }
+
+  .chip:nth-child(2) { --dy: 9px; }
+  .chip:nth-child(3) { --dy: 3px; }
+  .chip:nth-child(4) { --dy: 13px; }
+  .chip:nth-child(5) { --dy: 5px; }
+  .chip:nth-child(6) { --dy: 11px; }
+
+  .press { display: flex; flex-direction: column; min-height: clamp(640px, 100svh, 960px); }
+  .press .ph-bar { position: absolute; top: 0; left: 0; right: 0; width: auto; margin: 0; padding: 16px; }
+  .fields { position: relative; order: 1; flex: 1 1 auto; display: flex; flex-direction: column; }
+  .field { flex: 1 1 0; min-height: 76px; }
+  .field:first-child { padding-top: 76px; min-height: 152px; }
+  .sheet { align-items: center; }
+  .sheet.is-blank { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+  .field:first-child .sheet { align-items: flex-end; }
+  .sheet__label { grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "hex aa copy" "share aa copy" "bar aa copy"; align-items: center; gap: 4px 12px; padding: 4px 16px; }
+  .hex { grid-area: hex; font-size: 26px; line-height: 1.05; }
+  .share { grid-area: share; font-size: 14px; }
+  .share__n { font-size: 14px; }
+  .bar { grid-area: bar; width: 72px; }
+  .aa { grid-area: aa; gap: 4px; font-size: 14px; }
+  .aa__t { display: none; }
+  .aa > div { justify-content: flex-start; gap: 8px; }
+  .aa dd { font-size: 14px; }
+  .copy { grid-area: copy; width: auto; min-width: 60px; font-size: 14px; padding: 0 12px; }
+  .copy__hex { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .sheet.is-blank .sheet__label { grid-template-areas: "hex"; grid-template-columns: 1fr; }
+
+  .panel { order: 2; width: 100%; padding: 16px 16px 12px; }
+  .panel__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: start; }
+  .panel h1 { font-size: clamp(32px, 9.4vw, 72px); line-height: 1.02; max-width: 11em; }
+  .print { position: static; width: 64px; padding: 4px; transform: rotate(2deg); }
+  .print figcaption { display: none; }
+  .panel__do { flex-direction: column; align-items: stretch; gap: 8px; margin-top: 16px; }
+  .choose { min-height: 56px; width: 100%; }
+  .panel__cue { font-size: 16px; }
+  .panel__head h1 { min-width: 0; }
+  .panel__fine { font-size: 15px; }
+  .panel__foot { margin-top: 4px; min-height: 44px; row-gap: 0; }
+  .panel__alt { gap: 0 16px; }
+  .alt { font-size: 15px; }
+  /* Above the links, so an error is on screen without scrolling */
+  .status { order: -1; flex-basis: 100%; }
+  .status p { padding-bottom: 4px; }
+
+  .rack { padding-block: 72px; }
+  .rack__head, .sep__head, .plate__grid, .sep__end { grid-template-columns: minmax(0, 1fr); }
+  .rack__sheet { padding: 28px 16px 56px; margin-top: 32px; }
+  .chips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; }
+  .chip__face { min-height: 168px; }
+  .plate { padding-block: 72px; }
+  .say { padding-block: 88px; }
+  .say__after { margin-left: 0; margin-top: 32px; }
+  .sep { padding-block: 72px; }
+  .sep__press { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .films { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+}
+
+/* Phones rarely drag files, so the drop line gives its room to the action */
+@media (width <= 560px) { .panel__cue { display: none; } }
+
+/* Off-screen section heights, measured as content boxes, so the scrollbar holds still while they render. */
+.rack.below { contain-intrinsic-block-size: auto 701px; }
+.plate.below { contain-intrinsic-block-size: auto 529px; }
+.say.below { contain-intrinsic-block-size: auto 530px; }
+.sep.below { contain-intrinsic-block-size: auto 1685px; }
+.ph-foot.below { contain-intrinsic-block-size: auto 406px; }
+@media (width < 760px) {
+  .rack.below { contain-intrinsic-block-size: auto 1254px; }
+  .plate.below { contain-intrinsic-block-size: auto 628px; }
+  .say.below { contain-intrinsic-block-size: auto 426px; }
+  .sep.below { contain-intrinsic-block-size: auto 3040px; }
+  .ph-foot.below { contain-intrinsic-block-size: auto 602px; }
+}
