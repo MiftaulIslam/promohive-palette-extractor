@@ -37,10 +37,11 @@ export function Press() {
         <div className="panel__head">
           <h1>Six colors from any image</h1>
           <figure className="print" id="pal-preview">
-            <Image id="pal-img" src={sample} alt="The image you chose" sizes="(max-width: 1000px) 56px, (min-width: 1467px) 160px, 11vw" />
+            <Image id="pal-img" src={sample} alt="The image you chose" loading="eager" sizes="(max-width: 1000px) 56px, (min-width: 1467px) 160px, 11vw" />
             <figcaption>Your print</figcaption>
           </figure>
         </div>
+        <p className="panel__intro">A free color palette extractor for designers and developers. It pulls six main colors from a logo or photo, with hex codes and a contrast check for each. No sign-up, and the image stays in your browser.</p>
         <div className="panel__do">
           <input id="pal-file" className="sr-only" type="file" accept="image/*" />
           <label className="choose" htmlFor="pal-file">Choose an image</label>
